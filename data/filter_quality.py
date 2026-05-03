@@ -37,11 +37,14 @@ def is_trivial_body(code: str) -> bool:
 def is_docstring_trivial(func_name: str, docstring: str) -> bool:
     normalized_name = func_name.split(".")[-1].replace("_", " ").lower().strip()
     normalized_doc = docstring.lower().strip().rstrip(".")
+    if not normalized_name or not normalized_doc:
+        return True
     if normalized_doc == normalized_name:
         return True
     if normalized_doc in ("todo", "fixme", "hack", "xxx", "pass", "stub", "placeholder"):
         return True
-    if re.match(r"^(get|set|init|create|make|do|run|execute)\s+" + re.escape(normalized_name.split()[-1]) + r"\.?$", normalized_doc):
+    name_parts = normalized_name.split()
+    if name_parts and re.match(r"^(get|set|init|create|make|do|run|execute)\s+" + re.escape(name_parts[-1]) + r"\.?$", normalized_doc):
         return True
     return False
 

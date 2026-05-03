@@ -8,7 +8,7 @@ def download(output_dir: str) -> None:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    ds = load_dataset("code_search_net", "python", trust_remote_code=True)
+    ds = load_dataset("code_search_net", "python")
 
     for split_name in ["train", "validation", "test"]:
         split = ds[split_name]
