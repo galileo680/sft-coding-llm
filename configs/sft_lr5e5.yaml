@@ -1,0 +1,44 @@
+model:
+  name: "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+  max_seq_length: 1024
+  load_in_4bit: true
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+training:
+  num_epochs: 3
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 5.0e-5
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  bf16: true
+  gradient_checkpointing: true
+  save_steps: 200
+  eval_steps: 200
+  logging_steps: 10
+  seed: 42
+
+data:
+  train_path: "data/processed/splits/train.jsonl"
+  val_path: "data/processed/splits/val.jsonl"
+
+output:
+  dir: "outputs/sft_lr5e5"
+  hub_model_id: ""
+
+wandb:
+  project: "sft-coding-llm"
+  run_name: "sft-base-r16-lr5e5"
