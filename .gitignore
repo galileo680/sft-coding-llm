@@ -1,0 +1,16 @@
+data/raw/
+data/processed/
+outputs/
+wandb/
+__pycache__/
+*.pyc
+*.pyo
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+.env
