@@ -3,8 +3,7 @@ import json
 import yaml
 from pathlib import Path
 from datasets import Dataset
-from transformers import TrainingArguments
-from trl import SFTTrainer
+from trl import SFTConfig, SFTTrainer
 from training.model_utils import load_model_for_training
 
 import wandb
@@ -46,15 +45,16 @@ def train(config_path: str) -> None:
     output_dir = cfg["output"]["dir"]
     tcfg = cfg["training"]
 
-    training_args = TrainingArguments(
+    training_args = SFTConfig(
         output_dir=output_dir,
+        max_length=cfg["model"]["max_seq_length"],
         num_train_epochs=tcfg["num_epochs"],
         per_device_train_batch_size=tcfg["per_device_batch_size"],
         per_device_eval_batch_size=tcfg["per_device_batch_size"],
         gradient_accumulation_steps=tcfg["gradient_accumulation_steps"],
         learning_rate=tcfg["learning_rate"],
         lr_scheduler_type=tcfg["lr_scheduler_type"],
-        warmup_ratio=tcfg["warmup_ratio"],
+        warmup_steps=int(tcfg["warmup_ratio"] * 1000),
         weight_decay=tcfg["weight_decay"],
         bf16=tcfg["bf16"],
         gradient_checkpointing=tcfg["gradient_checkpointing"],
@@ -77,7 +77,6 @@ def train(config_path: str) -> None:
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         processing_class=tokenizer,
-        max_seq_length=cfg["model"]["max_seq_length"],
     )
 
     trainer.train()
