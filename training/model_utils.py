@@ -27,7 +27,7 @@ def load_model_for_training(model_name: str, load_in_4bit: bool, lora_cfg: dict)
         device_map="auto",
         trust_remote_code=True,
         torch_dtype=torch.bfloat16,
-        attn_implementation="flash_attention_2",
+        attn_implementation="sdpa",
     )
 
     if load_in_4bit:
@@ -56,7 +56,7 @@ def load_model_for_inference(model_name: str, adapter_path: str) -> tuple:
         device_map="auto",
         trust_remote_code=True,
         torch_dtype=torch.bfloat16,
-        attn_implementation="flash_attention_2",
+        attn_implementation="sdpa",
     )
 
     model = PeftModel.from_pretrained(model, adapter_path)
